@@ -1,0 +1,8 @@
+npm install express
+npm install mongoose
+npm install cors
+npm install jsonwebtoken
+npm install bcryptjs
+npm install multer
+npm install cloudinary
+npm install nodemon -D
