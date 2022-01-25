@@ -4,6 +4,7 @@ const router = express.Router();
 import { createUser, login } from '../controllers/user.controller.js';
 import { createPost, getAllPost, getOnePost, deletePost } from '../controllers/post.controller.js';
 import { addComment, deleteComment, updateComment } from '../controllers/comment.controller.js';
+import { likePost, LikeCommentPost } from '../controllers/like.controller.js';
 import { verifyToken } from '../util/token.js';
 import uploadMulter from '../util/uploadMulter.js';
 import validImg from '../util/validator.img.js';
@@ -22,5 +23,9 @@ router.delete('/deletePost/:idPost', verifyToken, deletePost);
 router.put('/addComment/:idPost', verifyToken, addComment);
 router.put('/deleteComment/:idPost/:idComment', verifyToken, deleteComment);
 router.put('/updateComment/:idPost/:idComment', verifyToken, updateComment);
+
+// Like
+router.post('/likeComment/:idPost', verifyToken, likePost);
+router.post('/likeCommentPost/:idPost/:idComment', verifyToken, LikeCommentPost);
 
 export default router;
