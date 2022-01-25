@@ -1,12 +1,11 @@
 import Post from '../models/Post.js';
-import User from '../models/User.js';
 import cloudinary from '../util/cloudinary.js';
 
 // Create a Post
 export const createPost = async (req, res) => {
     let message = req.body.message;
     let image = req.file?.path;
-    const { username } = req.userToken;
+    const { id } = req.userToken;
     
     try {
 
@@ -25,7 +24,7 @@ export const createPost = async (req, res) => {
         };
 
         await Post.create({
-            username: username,
+            user: id,
             message: message,
             imagen: {
                 url: result? result.secure_url : null,
@@ -42,17 +41,44 @@ export const createPost = async (req, res) => {
 
 // Get All Posts
 export const getAllPost = async (req, res) => {
-    const { username } = req.userToken;
-
     try {
-        const posts = await Post.find();
-        const user = await User.findOne(
-            { username: username },
-            { password: 0, createdAt: 0, updatedAt: 0 }
-        )
+        const posts = await Post.find().populate('user', '-password -createdAt -updatedAt');
 
         return res.status(200).json({ posts })
     } catch (err) {
         return res.status(500).json({ error: err });
     }
 };
+
+// Get One Post
+export const getOnePost = async (req, res) => {
+    const idPost = req.params.idPost;
+    try {
+        const post = await Post.findById(idPost).populate('user', '-password -createdAt -updatedAt');
+
+        return res.status(200).json({ post })
+    } catch (err) {
+        res.status(500).json({ error: err });
+    }
+};
+
+// Delete Post
+export const deletePost = async (req, res) => {
+    const idPost = req.params.idPost;
+
+    try {
+        let post = await Post.findById(idPost);
+
+        let img = post.imagen.cloudinary_id;
+
+        if (img) {
+            await cloudinary.uploader.destroy(img);
+        }
+
+        await post.remove();
+ 
+        return res.status(200).json({ message: 'Delete Post' })
+    } catch (err) {
+        res.status(500).json({ error: err });
+    }
+}
