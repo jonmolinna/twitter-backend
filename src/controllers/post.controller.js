@@ -32,7 +32,7 @@ export const createPost = async (req, res) => {
             },
         });
 
-        return res.status(500).json({ msg: 'Se creo un tweet' });
+        return res.status(200).json({ msg: 'Se creo un tweet' });
         
     } catch (err) {
         return res.status(500).json({ error: err });
@@ -42,7 +42,10 @@ export const createPost = async (req, res) => {
 // Get All Posts
 export const getAllPost = async (req, res) => {
     try {
-        const posts = await Post.find().populate('user', '-password -createdAt -updatedAt');
+        const posts = await Post
+        .find()
+        .sort({createdAt: -1})
+        .populate('user', '-password -createdAt -updatedAt')
 
         return res.status(200).json({ posts })
     } catch (err) {
@@ -56,7 +59,14 @@ export const getOnePost = async (req, res) => {
     try {
         const post = await Post.findById(idPost).populate('user', '-password -createdAt -updatedAt');
 
-        return res.status(200).json({ post })
+        if (post.comments.length > 0 ){
+            post.comments.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+            return res.status(200).json({ post })
+        } else  {
+            return res.status(200).json({ post })
+        }
+
     } catch (err) {
         res.status(500).json({ error: err });
     }

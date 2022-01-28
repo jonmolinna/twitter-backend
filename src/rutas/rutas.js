@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router();
 
-import { createUser, login } from '../controllers/user.controller.js';
+import { createUser, login, getThreeUser } from '../controllers/user.controller.js';
 import { createPost, getAllPost, getOnePost, deletePost } from '../controllers/post.controller.js';
 import { addComment, deleteComment, updateComment } from '../controllers/comment.controller.js';
 import { likePost, LikeCommentPost } from '../controllers/like.controller.js';
@@ -12,6 +12,7 @@ import validImg from '../util/validator.img.js';
 // Users
 router.post('/addUser', createUser);
 router.post('/auth', login);
+router.get('/getThreeUser', verifyToken, getThreeUser);
 
 // Post
 router.post('/addPost', [verifyToken, uploadMulter, validImg], createPost);

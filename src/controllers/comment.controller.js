@@ -20,7 +20,7 @@ export const addComment = async (req, res) => {
             }
         )
         
-        return res.status(500).json({ message: 'Comentario se agrego' });
+        return res.status(200).json({ message: 'Comentario se agrego' });
     } catch (err) {
         return res.status(500).json({ error: err });
     }
