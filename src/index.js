@@ -37,6 +37,16 @@ mongoose.connection.once('open', () => {
                 'change': change
             });
         }
+        else if (change.operationType === 'delete') {
+            pusher.trigger('deletePost', 'newDeletePost', {
+                'change': change
+            });
+        }
+        else if (change.operationType === 'update') {
+            pusher.trigger('updatePost', 'newUpdatePost', {
+                'change': change
+            });
+        }
         else {
             console.log('Error triggering pusher');
         }
